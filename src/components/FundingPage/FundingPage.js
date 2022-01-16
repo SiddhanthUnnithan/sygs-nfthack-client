@@ -58,7 +58,7 @@ function FundingPage() {
                 userAddress: walletAddress
             }
 
-            const responseJson = await makeRequest('/api/mint', 'POST', requestData);
+            const responseJson = await makeRequest('api/mint', 'POST', requestData);
 
             console.log(responseJson);
         } catch (err) {
@@ -104,7 +104,7 @@ function FundingPage() {
                 renderNotConnectedContainer()
             ) : (
                 <button onClick={sendRequestToMint}>
-                    Contribute Funding Amount.
+                    Contribute Funding Amount
                 </button>
             )}
         </div>    

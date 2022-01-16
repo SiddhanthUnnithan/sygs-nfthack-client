@@ -16,7 +16,7 @@ function App() {
           <Route path='/funding/:tokenSymbol'>
             <FundingPage/>
           </Route>
-          <Route path='/funding/:tokenSymbol/redeem'>
+          <Route path='/redeem/:tokenSymbol'>
             <TokenRedeem/>
           </Route>
         </Switch>

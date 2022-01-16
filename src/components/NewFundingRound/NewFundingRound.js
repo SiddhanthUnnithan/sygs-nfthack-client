@@ -22,7 +22,7 @@ function NewFundingRound() {
 
             console.log(requestData);
 
-            const responseJson = await makeRequest('/api/sb_input', 'POST', requestData);
+            const responseJson = await makeRequest('api/sb_input', 'POST', requestData);
 
             console.log(responseJson);
 
@@ -110,6 +110,10 @@ function NewFundingRound() {
                             Go To Funding Page
                         &lt;/button&gt;
                     </pre>
+                    <h4>Example:</h4>
+                    <form>
+                        <input type="button" onClick={`window.location.href='http://localhost:3000/funding/${tokenSymbol}'`} value="Go To Funding Page"/>
+                    </form>
                 </div>
             }
         </div>
