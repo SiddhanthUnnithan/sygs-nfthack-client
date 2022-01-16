@@ -56,30 +56,30 @@ function NewFundingRound() {
 
   return (
       <div>
-          <h2>Input your funding requirements!</h2>
+          <h2>Create a new funding round. Specify your funding requirements below.</h2>
           <form onSubmit={handleSubmit}>
-            <label> Enter your business name:
+            <label> What's the name of your business?
                 <input
                     type="text"
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                     />
             </label><br></br>
-            <label> Enter your funding amount:
+            <label> How much would you like to raise in USD?
                 <input
                     type="number"
                     value={fundingAmount}
                     onChange={(e) => setFundingAmount(e.target.value)}
                     />
             </label><br></br>
-            <label> Enter your funding purpose:
+            <label> What do you plan to use these funds for?
                 <input
                     type="text"
                     value={fundingPurpose}
                     onChange={(e) => setFundingPurpose(e.target.value)}
                     />
             </label><br></br>
-            <label> Enter the number of tokens you wish to issue:
+            <label> How many tokens would you like to issue?
                 <input
                     type="number"
                     value={desiredTokenIssue}
