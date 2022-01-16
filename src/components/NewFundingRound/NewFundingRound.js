@@ -25,6 +25,10 @@ function NewFundingRound() {
             const responseJson = await makeRequest('/api/sb_input', 'POST', requestData);
 
             console.log(responseJson);
+
+            if (!isNil(responseJson.contractAddress)) { setContractAddress(responseJson.contractAddress)};
+
+            if (!isNil(responseJson.tokenSymbol)) { setTokenSymbol(responseJson.tokenSymbol) };
         } catch (err) {
             console.log(err);
         }
@@ -84,6 +88,31 @@ function NewFundingRound() {
             </label><br></br>
             <input type="submit"/>
         </form>
+        <div>
+            {contractAddress === "" ? (
+                <></>
+            ): (
+                <div>
+                    <h4>View your deployed contract on Etherscan:</h4>
+                    <a href={`https://rinkeby.etherscan.io/address/${contractAddress}`}>https://rinkeby.etherscan.io/address/{contractAddress}</a>
+                </div>
+            )
+            }
+        </div>
+        <div>
+            {tokenSymbol === "" ? (
+                <></>
+            ): 
+                <div>
+                    <h4>Copy the following to embed a button for your funding page:</h4>
+                    <pre>
+                        &lt;button onClick={`window.location.href='http://localhost:3000/funding/${tokenSymbol}'`}&gt;
+                            Go To Funding Page
+                        &lt;/button&gt;
+                    </pre>
+                </div>
+            }
+        </div>
       </div>
       
   );
