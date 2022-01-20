@@ -2,6 +2,7 @@ import React, { useEffect, useState }from 'react';
 import { useParams } from 'react-router-dom';
 import { isNil } from 'lodash';
 import { ethers } from 'ethers';
+import { Container, Card, CardBody, CardTitle, Button } from 'shards-react';
 
 function FundingPage() {
     // route: /funding/<tokensymbol>
@@ -88,9 +89,9 @@ function FundingPage() {
 
     // render methods
     const renderNotConnectedContainer = () => (
-        <button onClick={connectWallet} className="cta-button connect-wallet-button">
+        <Button onClick={connectWallet} className="cta-button connect-wallet-button">
             Connect to Wallet
-        </button>
+        </Button>
     );
 
     useEffect(() => {
@@ -98,15 +99,21 @@ function FundingPage() {
     }, []);
 
     return (
-        <div>
-            <h2>Contribute to { tokenSymbol }!</h2>
-            {currentAccount === "" ? (
-                renderNotConnectedContainer()
-            ) : (
-                <button onClick={sendRequestToMint}>
-                    Contribute Funding Amount
-                </button>
-            )}
+        <div className='content-wrapper'>
+            <Container>
+                <Card className="contract-card">
+                <CardBody>
+                    <CardTitle>Contribute to { tokenSymbol }!</CardTitle>
+                    {currentAccount === "" ? (
+                        renderNotConnectedContainer()
+                    ) : (
+                        <Button onClick={sendRequestToMint}>
+                            Contribute Funding Amount
+                        </Button>
+                    )}
+                </CardBody>
+            </Card>
+            </Container>
         </div>    
     );
 }
