@@ -2,6 +2,10 @@ import React, { useEffect, useState }from 'react';
 import { useParams } from 'react-router-dom';
 import { isNil } from 'lodash';
 import { ethers } from 'ethers';
+import {
+    Container,
+    Card, CardBody, CardTitle, Button
+} from "shards-react";
 
 function TokenRedeem() {
     // route: /funding/<tokensymbol>
@@ -99,15 +103,18 @@ function TokenRedeem() {
     }, []);
 
     return (
-        <div>
-            <div>
-                <h2>Redeem Discount Code for { tokenSymbol }!</h2>
-                {currentAccount === "" ? (
+        <div className='content-wrapper'>
+        <Container>
+        <Card className="contract-card">
+            <CardBody>
+                <CardTitle>Redeem Discount Code for { tokenSymbol }!</CardTitle>
+                <div>
+                    {currentAccount === "" ? (
                     renderNotConnectedContainer()
                 ) : (
-                    <button onClick={redeemDiscountCode}>
+                    <Button onClick={redeemDiscountCode}>
                         Redeem Discount Code
-                    </button>
+                    </Button>
                 )}
             </div>
             <div>
@@ -119,7 +126,12 @@ function TokenRedeem() {
                         <h3>kha723hjkf02hhjk</h3>
                     </div>
                 )}
-            </div>
+                </div>
+            </CardBody>
+        </Card> 
+        <div>
+        </div>
+        </Container>
         </div>
         
     );
