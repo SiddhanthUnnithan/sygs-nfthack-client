@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+.navbar-title {
+  font-size: 15px;
+}
+
+ .content-wrapper {
+   margin-top: 20px;
+ }
+
+ .contract-card {
+  margin-top: 20px;
+ }

@@ -1,41 +1,58 @@
-import React, {useState} from 'react';
+import React, {useState, Component} from 'react';
 import { isNil } from 'lodash';
+import {
+    Container,
+    Form, FormInput, FormGroup, Button,
+    Card, CardBody, CardTitle
+} from "shards-react";
+import { Spinner } from 'react-bootstrap';
 
-function NewFundingRound() {
-    const [businessName, setBusinessName] = useState("");
-    const [fundingAmount, setFundingAmount] = useState(0);
-    const [fundingPurpose, setFundingPurpose] = useState("");
-    const [desiredTokenIssue, setDesiredTokenIssue] = useState(0);
-    const [contractAddress, setContractAddress] = useState("");
-    const [tokenSymbol, setTokenSymbol] = useState("");
+class NewFundingRound extends Component {
 
-    const handleSubmit = async(event) => {
+    constructor(props) {
+        super(props);
+        this.state = {
+            businessName: "",
+            fundingAmount: 0,
+            fundingPurpose: "",
+            desiredTokenIssue: 0,
+            contractAddress: "",
+            tokenSymbol: "",
+            loadingContract: false,
+        };
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.makeRequest = this.makeRequest.bind(this);
+    }
+
+    async handleSubmit(event) {
+        console.log(this.state);
         event.preventDefault();
         
         try {
             const requestData = {
-                businessName: businessName,
-                fundingAmount: fundingAmount,
-                fundingPurpose: fundingPurpose,
-                numTokensIssued: desiredTokenIssue
+                businessName: this.state.businessName,
+                fundingAmount: this.state.fundingAmount,
+                fundingPurpose: this.state.fundingPurpose,
+                numTokensIssued: this.state.desiredTokenIssue
             }
 
             console.log(requestData);
-
-            const responseJson = await makeRequest('api/sb_input', 'POST', requestData);
+            this.setState({loadingContract: true});
+            const responseJson = await this.makeRequest('api/sb_input', 'POST', requestData);
 
             console.log(responseJson);
 
-            if (!isNil(responseJson.contractAddress)) { setContractAddress(responseJson.contractAddress)};
+            if (!isNil(responseJson.contractAddress)) { this.setState({contractAddress: responseJson.contractAddress})};
 
-            if (!isNil(responseJson.tokenSymbol)) { setTokenSymbol(responseJson.tokenSymbol) };
+            if (!isNil(responseJson.tokenSymbol)) { this.setState({tokenSymbol: responseJson.tokenSymbol}) };
+            this.setState({loadingContract: false});
         } catch (err) {
             console.log(err);
         }
     }
 
-    // helper methods
-    const makeRequest = async(path, method, data=undefined) => {
+    // Helper Function
+    async makeRequest(path, method, data=undefined) {
         const requestUrl = `http://localhost:5678/${path}`;
 
         const requestOptions = {
@@ -54,72 +71,65 @@ function NewFundingRound() {
         return jsonResponse;
     }
 
-  return (
-      <div>
-          <h2>Create a new funding round. Specify your funding requirements below.</h2>
-          <form onSubmit={handleSubmit}>
-            <label> What's the name of your business?
-                <input
-                    type="text"
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
-                    />
-            </label><br></br>
-            <label> How much would you like to raise in USD?
-                <input
-                    type="number"
-                    value={fundingAmount}
-                    onChange={(e) => setFundingAmount(e.target.value)}
-                    />
-            </label><br></br>
-            <label> What do you plan to use these funds for?
-                <input
-                    type="text"
-                    value={fundingPurpose}
-                    onChange={(e) => setFundingPurpose(e.target.value)}
-                    />
-            </label><br></br>
-            <label> How many tokens would you like to issue?
-                <input
-                    type="number"
-                    value={desiredTokenIssue}
-                    onChange={(e) => setDesiredTokenIssue(e.target.value)}
-                    />
-            </label><br></br>
-            <input type="submit"/>
-        </form>
-        <div>
-            {contractAddress === "" ? (
-                <></>
-            ): (
+    render() {
+        let buttonText = "Submit";
+        if (this.state.loadingContract) {
+            buttonText =  <Spinner animation="border" variant="light" />;
+        }
+
+        return (
+            <div className='content-wrapper'>
+            <Container>
+                <Form onSubmit={this.handleSubmit}>
+                    <FormGroup>
+                        <label htmlFor="#businessName">Enter Business Name</label>
+                        <FormInput onChange={(e) => this.setState({businessName:e.target.value})} id="#businessName" placeholder="Business Name" />
+                    </FormGroup>
+                    <FormGroup>
+                        <label htmlFor="#fundingAmount">Enter Total Funding Amount</label>
+                        <FormInput onChange={(e) => this.setState({fundingAmount:e.target.value})} type="number" id="#fundingAmount" placeholder="Funding Amount" />
+                    </FormGroup>
+                    <FormGroup>
+                        <label htmlFor="#fundingPurpose">Enter Funding Purpose</label>
+                        <FormInput onChange={(e) => this.setState({fundingPurpose:e.target.value})} id="#fundingPurpose" placeholder="Funding Purpose" />
+                    </FormGroup>
+                    <FormGroup>
+                        <label htmlFor="#desiredTokenIssue">Enter Total Number of Tokens You Wish to Issue</label>
+                        <FormInput onChange={(e) => this.setState({desiredTokenIssue:e.target.value})} value={this.state.desiredTokenIssue} type="number" id="#desiredTokenIssue" placeholder="Number of Tokens" />
+                    </FormGroup>
+                    <Button block theme="success" type="submit">{buttonText}</Button>
+                </Form>
                 <div>
-                    <h4>View your deployed contract on Etherscan:</h4>
-                    <a href={`https://rinkeby.etherscan.io/address/${contractAddress}`}>https://rinkeby.etherscan.io/address/{contractAddress}</a>
-                </div>
-            )
-            }
-        </div>
-        <div>
-            {tokenSymbol === "" ? (
-                <></>
-            ): 
                 <div>
-                    <h4>Copy the following to embed a button for your funding page:</h4>
-                    <pre>
-                        &lt;button onClick={`window.location.href='http://localhost:3000/funding/${tokenSymbol}'`}&gt;
-                            Go To Funding Page
-                        &lt;/button&gt;
-                    </pre>
-                    <h4>Example:</h4>
-                    <form>
-                        <input type="button" onClick={`window.location.href='http://localhost:3000/funding/${tokenSymbol}'`} value="Go To Funding Page"/>
-                    </form>
+                    {this.state.tokenSymbol === "" && this.state.contractAddress === "" ?(
+                        <></>
+                    ):
+                    <Card className="contract-card">
+                        <CardBody>
+                            <CardTitle>View Deployed Contract on Etherscan:</CardTitle>
+                            <h6 href={`https://rinkeby.etherscan.io/address/${this.state.contractAddress}`}>https://rinkeby.etherscan.io/address/{this.state.contractAddress}</h6>
+                            <div>
+                                <h5>Copy the following to embed a button for your funding page:</h5>
+                                <pre>
+                                    &lt;button onClick={`window.location.href='http://localhost:3000/funding/${this.state.tokenSymbol}'`}&gt;
+                                        Go To Funding Page
+                                    &lt;/button&gt;
+                                </pre>
+                                <h6>Example:</h6>
+                                <form>
+                                    <input type="button" onClick={`window.location.href='http://localhost:3000/funding/${this.state.tokenSymbol}'`} value="Go To Funding Page"/>
+                                </form>
+                            </div>
+                        </CardBody>
+                    </Card> 
+                }
                 </div>
-            }
+            </div>
+        </Container>
         </div>
-      </div>
-      
-  );
+        );
+    }
+
 }
 
 export default NewFundingRound;
