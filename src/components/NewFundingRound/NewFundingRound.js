@@ -25,7 +25,6 @@ class NewFundingRound extends Component {
     }
 
     async handleSubmit(event) {
-        console.log(this.state);
         event.preventDefault();
         
         try {
@@ -35,16 +34,15 @@ class NewFundingRound extends Component {
                 fundingPurpose: this.state.fundingPurpose,
                 numTokensIssued: this.state.desiredTokenIssue
             }
-
-            console.log(requestData);
+            
             this.setState({loadingContract: true});
+            
             const responseJson = await this.makeRequest('api/sb_input', 'POST', requestData);
-
-            console.log(responseJson);
 
             if (!isNil(responseJson.contractAddress)) { this.setState({contractAddress: responseJson.contractAddress})};
 
             if (!isNil(responseJson.tokenSymbol)) { this.setState({tokenSymbol: responseJson.tokenSymbol}) };
+
             this.setState({loadingContract: false});
         } catch (err) {
             console.log(err);
@@ -82,19 +80,19 @@ class NewFundingRound extends Component {
             <Container>
                 <Form onSubmit={this.handleSubmit}>
                     <FormGroup>
-                        <label htmlFor="#businessName">Enter Business Name</label>
+                        <label htmlFor="#businessName">What's the name of your business?</label>
                         <FormInput onChange={(e) => this.setState({businessName:e.target.value})} id="#businessName" placeholder="Business Name" />
                     </FormGroup>
                     <FormGroup>
-                        <label htmlFor="#fundingAmount">Enter Total Funding Amount</label>
+                        <label htmlFor="#fundingAmount">How much would you like to raise in USD?</label>
                         <FormInput onChange={(e) => this.setState({fundingAmount:e.target.value})} type="number" id="#fundingAmount" placeholder="Funding Amount" />
                     </FormGroup>
                     <FormGroup>
-                        <label htmlFor="#fundingPurpose">Enter Funding Purpose</label>
+                        <label htmlFor="#fundingPurpose">What do you plan to use these funds for?</label>
                         <FormInput onChange={(e) => this.setState({fundingPurpose:e.target.value})} id="#fundingPurpose" placeholder="Funding Purpose" />
                     </FormGroup>
                     <FormGroup>
-                        <label htmlFor="#desiredTokenIssue">Enter Total Number of Tokens You Wish to Issue</label>
+                        <label htmlFor="#desiredTokenIssue">How many tokens would you like to issue?</label>
                         <FormInput onChange={(e) => this.setState({desiredTokenIssue:e.target.value})} value={this.state.desiredTokenIssue} type="number" id="#desiredTokenIssue" placeholder="Number of Tokens" />
                     </FormGroup>
                     <Button block theme="success" type="submit">{buttonText}</Button>
@@ -107,7 +105,7 @@ class NewFundingRound extends Component {
                     <Card className="contract-card">
                         <CardBody>
                             <CardTitle>View Deployed Contract on Etherscan:</CardTitle>
-                            <h6 href={`https://rinkeby.etherscan.io/address/${this.state.contractAddress}`}>https://rinkeby.etherscan.io/address/{this.state.contractAddress}</h6>
+                            <a href={`https://rinkeby.etherscan.io/address/${this.state.contractAddress}`}>https://rinkeby.etherscan.io/address/{this.state.contractAddress}</a>
                             <div>
                                 <h5>Copy the following to embed a button for your funding page:</h5>
                                 <pre>
