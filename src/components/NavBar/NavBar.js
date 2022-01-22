@@ -1,12 +1,15 @@
-import React, {Component} from "react";
+import React from "react";
 import {
-    Container,
   Navbar,
   NavbarToggler,
   NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  Collapse
 } from "shards-react";
 
-export default class NavBar extends Component {
+export default class NavBar extends React.Component {
   constructor(props) {
     super(props);
 
@@ -39,12 +42,34 @@ export default class NavBar extends Component {
 
   render() {
     return (
-        <Navbar type="dark" theme="info" expand="md">
-            <Container>
-            <NavbarBrand className='m-auto navbar-title' href="/new-funding-round">SYGS</NavbarBrand>
-            <NavbarToggler onClick={this.toggleNavbar} />
-            </Container>
-        </Navbar>
+      <Navbar type="dark" theme="primary" expand="md">
+        <NavbarBrand href="/home">SYGS</NavbarBrand>
+        <NavbarToggler onClick={this.toggleNavbar} />
+        <Collapse open={this.state.collapseOpen} navbar>
+          <Nav navbar>
+            <NavItem>
+              <NavLink href="/about">
+                Team
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/new-funding-round">
+                Request Funding
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/contribute">
+                Contribute
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/redeem">
+                Redeem
+              </NavLink>
+            </NavItem>
+          </Nav>
+        </Collapse>
+      </Navbar>
     );
   }
 }

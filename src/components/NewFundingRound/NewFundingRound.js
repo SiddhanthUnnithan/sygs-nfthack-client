@@ -1,11 +1,12 @@
-import React, {useState, Component} from 'react';
+import React, {Component} from 'react';
 import { isNil } from 'lodash';
 import {
     Container,
     Form, FormInput, FormGroup, Button,
-    Card, CardBody, CardTitle
+    Card, CardBody, CardHeader, CardTitle
 } from "shards-react";
 import { Spinner } from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 
 class NewFundingRound extends Component {
 
@@ -44,6 +45,7 @@ class NewFundingRound extends Component {
             if (!isNil(responseJson.tokenSymbol)) { this.setState({tokenSymbol: responseJson.tokenSymbol}) };
 
             this.setState({loadingContract: false});
+
         } catch (err) {
             console.log(err);
         }
@@ -69,10 +71,17 @@ class NewFundingRound extends Component {
         return jsonResponse;
     }
 
+    nextPath(path) {
+        this.props.history.push(path);
+    }
+
     render() {
         let buttonText = "Submit";
+        let loadingText = '';
+
         if (this.state.loadingContract) {
-            buttonText =  <Spinner animation="border" variant="light" />;
+            buttonText =  <Spinner animation="border" variant="light"></Spinner>;
+            loadingText = <h6 padding='5px'>Your smart contract is being generated and deployed. Thank you for your patience!</h6>;
         }
 
         return (
@@ -95,32 +104,23 @@ class NewFundingRound extends Component {
                         <label htmlFor="#desiredTokenIssue">How many tokens would you like to issue?</label>
                         <FormInput onChange={(e) => this.setState({desiredTokenIssue:e.target.value})} value={this.state.desiredTokenIssue} type="number" id="#desiredTokenIssue" placeholder="Number of Tokens" />
                     </FormGroup>
-                    <Button block theme="success" type="submit">{buttonText}</Button>
+                    <div>
+                        <Button block theme="success" type="submit">{buttonText}</Button>{loadingText}
+                    </div>
                 </Form>
                 <div>
                 <div>
                     {this.state.tokenSymbol === "" && this.state.contractAddress === "" ?(
                         <></>
                     ):
-                    <Card className="contract-card">
-                        <CardBody>
-                            <CardTitle>View Deployed Contract on Etherscan:</CardTitle>
-                            <a href={`https://rinkeby.etherscan.io/address/${this.state.contractAddress}`}>https://rinkeby.etherscan.io/address/{this.state.contractAddress}</a>
-                            <div>
-                                <h5>Copy the following to embed a button for your funding page:</h5>
-                                <pre>
-                                    &lt;button onClick={`window.location.href='http://localhost:3000/funding/${this.state.tokenSymbol}'`}&gt;
-                                        Go To Funding Page
-                                    &lt;/button&gt;
-                                </pre>
-                                <h6>Example:</h6>
-                                <form>
-                                    <input type="button" onClick={`window.location.href='http://localhost:3000/funding/${this.state.tokenSymbol}'`} value="Go To Funding Page"/>
-                                </form>
-                            </div>
-                        </CardBody>
-                    </Card> 
-                }
+                        <Card className="contract-card">
+                            <CardBody>
+                                <CardTitle>Contract Deployment Details</CardTitle>
+                                <p>View your deployed contract on Etherscan <a href={`https://rinkeby.etherscan.io/address/${this.state.contractAddress}`}>https://rinkeby.etherscan.io/address/{this.state.contractAddress}</a></p>
+                                <Button onClick={() => this.nextPath(`/funding/${this.state.tokenSymbol}`)}>Go to funding page</Button>
+                            </CardBody>
+                        </Card>
+                    }
                 </div>
             </div>
         </Container>
@@ -130,4 +130,4 @@ class NewFundingRound extends Component {
 
 }
 
-export default NewFundingRound;
+export default withRouter(NewFundingRound);
