@@ -1,24 +1,38 @@
-import React, { useEffect, useState }from 'react';
-import { useParams } from 'react-router-dom';
+import React, { Component }from 'react';
 import { isNil } from 'lodash';
 import { ethers } from 'ethers';
 import { Container, Card, CardBody, CardTitle, Button } from 'shards-react';
+import { Spinner } from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 
-function FundingPage() {
-    // route: /funding/<tokensymbol>
-    const { tokenSymbol } = useParams();
-    const [currentAccount, setCurrentAccount] = useState("");
+class FundingPage extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            currentAccount: '',
+            mintingToken: false,
+            tokenId: undefined,
+            userWalletAddress: undefined,
+        };
+        // route: /funding/tokenSymbol
+        this.tokenSymbol = this.props.match.params.tokenSymbol;
 
-    // main methods
-    const checkIfWalletIsConnected = async () => {
+        // public methods
+        this.checkIfWalletIsConnected = this.checkIfWalletIsConnected.bind(this);
+        this.connectWallet = this.connectWallet.bind(this);
+        this.sendRequestToMint = this.sendRequestToMint.bind(this);
+    }
+
+    // public methods
+    async checkIfWalletIsConnected() {
         const { ethereum } = window;
 
         if (!ethereum){
             return <h2>Please install the metamask extension!</h2>;
-        }
+        }   
     }
 
-    const connectWallet = async() => {
+    async connectWallet() {
         try {
             const { ethereum } = window;
 
@@ -30,14 +44,17 @@ function FundingPage() {
             // request access to account
             const accounts = await ethereum.request({ method: "eth_requestAccounts" });
 
-            setCurrentAccount(accounts[0]);
+            this.setState({ currentAccount: accounts[0] });
+
         } catch (err){
             console.log(err);
             return <h2>Unable to connect wallet!</h2>
         }
     }
 
-    const sendRequestToMint = async () => {
+    async sendRequestToMint(event){
+        event.preventDefault();
+        
         try {
             const { ethereum } = window;
 
@@ -46,6 +63,8 @@ function FundingPage() {
                 return;
             }
 
+            this.setState({ mintingToken: true });
+
             // get user wallet address
             const provider = new ethers.providers.Web3Provider(ethereum);
 
@@ -53,22 +72,37 @@ function FundingPage() {
 
             const walletAddress = await signer.getAddress();
 
+            if (isNil(walletAddress)) { 
+                console.log('Unable to get user wallet address.');
+                return; 
+            }
+            
+            this.setState({ userWalletAddress: walletAddress });
+
             // make minting request
             const requestData = {
-                tokenSymbol: tokenSymbol,
+                tokenSymbol: this.tokenSymbol,
                 userAddress: walletAddress
             }
 
-            const responseJson = await makeRequest('api/mint', 'POST', requestData);
+            const responseJson = await this.makeRequest('api/mint', 'POST', requestData);
 
-            console.log(responseJson);
+            console.log(responseJson.tokenId);
+            
+            if (isNil(responseJson) || !(responseJson.successfulMint) || isNil(responseJson.tokenId)){
+                console.log('Invalid minting response.');
+                return;
+            }
+
+            this.setState({ tokenId: responseJson.tokenId });
+            
+            this.setState({ mintingToken: false });
         } catch (err) {
             console.log(err);
         }
     }
 
-    // helper methods
-    const makeRequest = async(path, method, data=undefined) => {
+    async makeRequest(path, method, data=undefined) {
         const requestUrl = `http://localhost:5678/${path}`;
 
         const requestOptions = {
@@ -87,35 +121,58 @@ function FundingPage() {
         return jsonResponse;
     }
 
-    // render methods
-    const renderNotConnectedContainer = () => (
-        <Button onClick={connectWallet} className="cta-button connect-wallet-button">
-            Connect to Wallet
-        </Button>
-    );
+    nextPath(path) {
+        this.props.history.push(path);
+    }
 
-    useEffect(() => {
-        checkIfWalletIsConnected();
-    }, []);
+    render() {
+        let contributionButtonText = 'Contribute Funding Amount';
+        let loadingText = '';
 
-    return (
-        <div className='content-wrapper'>
-            <Container>
-                <Card className="contract-card">
-                <CardBody>
-                    <CardTitle>Contribute to { tokenSymbol }!</CardTitle>
-                    {currentAccount === "" ? (
-                        renderNotConnectedContainer()
-                    ) : (
-                        <Button onClick={sendRequestToMint}>
-                            Contribute Funding Amount
-                        </Button>
-                    )}
-                </CardBody>
-            </Card>
-            </Container>
-        </div>    
-    );
+        if (this.state.mintingToken){
+            contributionButtonText =  <Spinner animation="border" variant="light"></Spinner>;
+            loadingText = <h6 padding='5px'>Congratulations on contributing! Your token is being minted. Thank you for your patience!</h6>;
+        }
+
+        return (
+            <div className='content-wrapper'>
+                <Container>
+                    <div>
+                        <Card>
+                            <CardBody>
+                                <CardTitle>Contributing to { this.props.match.params.tokenSymbol }!</CardTitle>
+                                {this.state.currentAccount === "" ? (
+                                    <Button onClick={() => this.connectWallet()} className="cta-button connect-wallet-button">
+                                        Connect to Wallet
+                                    </Button>
+                                ) : (
+                                    <div>
+                                        <Button onClick={this.sendRequestToMint}>
+                                            {contributionButtonText}
+                                        </Button>
+                                        <br/>
+                                        {loadingText}
+                                    </div>
+                                )}
+                            </CardBody>
+                        </Card>
+                        {(isNil(this.state.tokenId)) ? (
+                            <></>
+                        ): (
+                            <Card className="contract-card">
+                                <CardBody>
+                                    <CardTitle>Token Minting Details</CardTitle>
+                                    <p>View your minted token on Opensea <a href={`https://testnets.opensea.io/assets/${this.state.tokenId}`}>https://testnets.opensea.io/assets/${this.state.tokenId}</a></p>
+                                    <p><b>Note: </b>Opensea may take a few minutes to show your token. Thank you for being patient!</p>
+                                    <Button onClick={() => this.nextPath(`/redeem/${this.state.tokenSymbol}`)}>Go to Redeem page</Button>
+                                </CardBody>
+                            </Card>
+                        )}
+                    </div>
+                </Container>
+            </div>
+        )
+    }
 }
 
-export default FundingPage;
+export default withRouter(FundingPage);
