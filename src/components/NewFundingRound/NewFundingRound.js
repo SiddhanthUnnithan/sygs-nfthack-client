@@ -3,7 +3,7 @@ import { isNil } from 'lodash';
 import {
     Container,
     Form, FormInput, FormGroup, Button,
-    Card, CardBody, CardHeader, CardTitle
+    Card, CardBody, CardTitle
 } from "shards-react";
 import { Spinner } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
@@ -12,6 +12,7 @@ class NewFundingRound extends Component {
 
     constructor(props) {
         super(props);
+        // state variables
         this.state = {
             businessName: "",
             fundingAmount: 0,
@@ -21,6 +22,8 @@ class NewFundingRound extends Component {
             tokenSymbol: "",
             loadingContract: false,
         };
+
+        // public methods
         this.handleSubmit = this.handleSubmit.bind(this);
         this.makeRequest = this.makeRequest.bind(this);
     }
@@ -105,7 +108,9 @@ class NewFundingRound extends Component {
                         <FormInput onChange={(e) => this.setState({desiredTokenIssue:e.target.value})} value={this.state.desiredTokenIssue} type="number" id="#desiredTokenIssue" placeholder="Number of Tokens" />
                     </FormGroup>
                     <div>
-                        <Button block theme="success" type="submit">{buttonText}</Button>{loadingText}
+                        <Button block theme="success" type="submit">{buttonText}</Button>
+                        <br/>
+                        {loadingText}
                     </div>
                 </Form>
                 <div>
@@ -117,6 +122,7 @@ class NewFundingRound extends Component {
                             <CardBody>
                                 <CardTitle>Contract Deployment Details</CardTitle>
                                 <p>View your deployed contract on Etherscan <a href={`https://rinkeby.etherscan.io/address/${this.state.contractAddress}`}>https://rinkeby.etherscan.io/address/{this.state.contractAddress}</a></p>
+                                <p><b>Note: </b>Etherscan may take a few minutes to show your contract. Thank you for being patient!</p>
                                 <Button onClick={() => this.nextPath(`/funding/${this.state.tokenSymbol}`)}>Go to funding page</Button>
                             </CardBody>
                         </Card>
