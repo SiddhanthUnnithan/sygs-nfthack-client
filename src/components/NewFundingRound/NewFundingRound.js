@@ -17,7 +17,7 @@ class NewFundingRound extends Component {
             businessName: "",
             fundingAmount: 0,
             fundingPurpose: "",
-            desiredTokenIssue: 0,
+            donationSize: 0,
             contractAddress: "",
             tokenSymbol: "",
             loadingContract: false,
@@ -32,11 +32,13 @@ class NewFundingRound extends Component {
         event.preventDefault();
         
         try {
+            const desiredTokenIssue = Math.round(this.state.fundingAmount / this.state.donationSize);
+            
             const requestData = {
                 businessName: this.state.businessName,
                 fundingAmount: this.state.fundingAmount,
                 fundingPurpose: this.state.fundingPurpose,
-                numTokensIssued: this.state.desiredTokenIssue
+                numTokensIssued: desiredTokenIssue
             }
             
             this.setState({loadingContract: true});
@@ -104,8 +106,8 @@ class NewFundingRound extends Component {
                         <FormInput onChange={(e) => this.setState({fundingPurpose:e.target.value})} id="#fundingPurpose" placeholder="Funding Purpose" />
                     </FormGroup>
                     <FormGroup>
-                        <label htmlFor="#desiredTokenIssue">How many tokens would you like to issue?</label>
-                        <FormInput onChange={(e) => this.setState({desiredTokenIssue:e.target.value})} value={this.state.desiredTokenIssue} type="number" id="#desiredTokenIssue" placeholder="Number of Tokens" />
+                        <label htmlFor="#donationSize">What do you want the fixed donation size to be?</label>
+                        <FormInput onChange={(e) => this.setState({donationSize:e.target.value})} value={this.state.donationSize} type="number" id="#donationSize" placeholder="Fixed Donation Size" />
                     </FormGroup>
                     <div>
                         <Button block theme="success" type="submit">{buttonText}</Button>
