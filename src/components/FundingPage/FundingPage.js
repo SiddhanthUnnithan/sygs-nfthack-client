@@ -13,6 +13,7 @@ class FundingPage extends Component {
             mintingToken: false,
             tokenId: undefined,
             userWalletAddress: undefined,
+            contractAddress: undefined
         };
         // route: /funding/tokenSymbol
         this.tokenSymbol = this.props.match.params.tokenSymbol;
@@ -89,13 +90,15 @@ class FundingPage extends Component {
 
             console.log(responseJson.tokenId);
             
-            if (isNil(responseJson) || !(responseJson.successfulMint) || isNil(responseJson.tokenId)){
+            if (isNil(responseJson) || !(responseJson.successfulMint) || isNil(responseJson.tokenId) || isNil(responseJson.contractAddress)){
                 console.log('Invalid minting response.');
                 return;
             }
 
             this.setState({ tokenId: responseJson.tokenId });
-            
+
+            this.setState({ contractAddress: responseJson.contractAddress });
+
             this.setState({ mintingToken: false });
         } catch (err) {
             console.log(err);
@@ -162,7 +165,9 @@ class FundingPage extends Component {
                             <Card className="contract-card">
                                 <CardBody>
                                     <CardTitle>Token Minting Details</CardTitle>
-                                    <p>View your minted token on Opensea <a href={`https://testnets.opensea.io/assets/${this.state.tokenId}`}>https://testnets.opensea.io/assets/${this.state.tokenId}</a></p>
+                                    <p>View your minted token on Opensea:
+                                        <a href={`https://testnets.opensea.io/assets/${this.state.contractAddress}/${this.state.tokenId}`}>https://testnets.opensea.io/assets/${this.state.contractAddress}/${this.state.tokenId}</a>
+                                    </p>
                                     <p><b>Note: </b>Opensea may take a few minutes to show your token. Thank you for being patient!</p>
                                     <Button onClick={() => this.nextPath(`/redeem/${this.state.tokenSymbol}`)}>Go to Redeem page</Button>
                                 </CardBody>
