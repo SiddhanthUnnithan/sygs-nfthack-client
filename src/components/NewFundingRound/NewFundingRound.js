@@ -7,6 +7,7 @@ import {
 } from "shards-react";
 import { Spinner } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
+import { InfoCircleFill } from 'react-bootstrap-icons';
 
 class NewFundingRound extends Component {
 
@@ -22,10 +23,10 @@ class NewFundingRound extends Component {
             tokenSymbol: "",
             loadingContract: false,
             toolTip: {
-                tipOne: false,
-                tipTwo: false,
-                tipThree: false,
-                tipFour: false,
+                businessNameTip: false,
+                fundingAmountTip: false,
+                fundingPurposeTip: false,
+                donationSizeTip: false,
             },
         };
 
@@ -107,50 +108,54 @@ class NewFundingRound extends Component {
             <Container>
                 <Form onSubmit={this.handleSubmit}>
                     <FormGroup>
-                        <label id="businessNameLabel" htmlFor="#businessName">What's the name of your business?</label>
+                        <label htmlFor="#businessName">What's the name of your business?</label>
+                        <InfoCircleFill className="toolTip" id="businessNameLabel" size={13} />
                         <Tooltip
-                            open={this.state.toolTip.tipOne}
+                            open={this.state.toolTip.businessNameTip}
                             placement="right"
                             target="#businessNameLabel"
-                            toggle={() => this.toggle("tipOne")}
+                            toggle={() => this.toggle("businessNameTip")}
                         >
-                        Enter the name of your current business ☝️
+                        Enter the name of the business you're trying to raise money for ☝️
                         </Tooltip>
                         <FormInput onChange={(e) => this.setState({businessName:e.target.value})} id="#businessName" placeholder="Business Name" />
                     </FormGroup>
                     <FormGroup>
-                        <label id="fundingAmountLabel" htmlFor="#fundingAmount">How much would you like to raise in USD?</label>
+                        <label htmlFor="#fundingAmount">How much would you like to raise in USD?</label>
+                        <InfoCircleFill className="toolTip" id="fundingAmountLabel" size={13} />
                         <Tooltip
-                            open={this.state.toolTip.tipTwo}
+                            open={this.state.toolTip.fundingAmountTip}
                             placement="right"
                             target="#fundingAmountLabel"
-                            toggle={() => this.toggle("tipTwo")}
+                            toggle={() => this.toggle("fundingAmountTip")}
                         >
-                        Enter the total amount that you would like to raise for your business (USD) ☝️
+                        You can raise as little as $50, with a maximum of $5000 (USD)!
                         </Tooltip>
                         <FormInput onChange={(e) => this.setState({fundingAmount:e.target.value})} type="number" id="#fundingAmount" placeholder="Funding Amount" />
                     </FormGroup>
                     <FormGroup>
-                        <label id="fundingPurposeLabel" htmlFor="#fundingPurpose">What do you plan to use these funds for?</label>
+                        <label htmlFor="#fundingPurpose">What do you plan to use these funds for?</label>
+                        <InfoCircleFill className="toolTip" id="fundingPurposeLabel" size={13} />
                         <Tooltip
-                            open={this.state.toolTip.tipThree}
+                            open={this.state.toolTip.fundingPurposeTip}
                             placement="right"
                             target="#fundingPurposeLabel"
-                            toggle={() => this.toggle("tipThree")}
+                            toggle={() => this.toggle("fundingPurposeTip")}
                         >
-                        What do you plan on doing with these funds? Ex. Research/Development, Marketing etc. ☝️
+                        Let your customers know what you plan on doing with these funds. You can keep this simple for now! E.g. Research and Development, Paying Suppliers
                         </Tooltip>
                         <FormInput onChange={(e) => this.setState({fundingPurpose:e.target.value})} id="#fundingPurpose" placeholder="Funding Purpose" />
                     </FormGroup>
                     <FormGroup>
-                        <label id="donationSizeLabel" htmlFor="#donationSize">What do you want the fixed donation size to be?</label>
+                        <label htmlFor="#donationSize">What do you want the fixed investment size to be?</label>
+                        <InfoCircleFill className="toolTip" id="donationSizeLabel" size={13} />
                         <Tooltip
-                            open={this.state.toolTip.tipFour}
+                            open={this.state.toolTip.donationSizeTip}
                             placement="right"
                             target="#donationSizeLabel"
-                            toggle={() => this.toggle("tipFour")}
+                            toggle={() => this.toggle("donationSizeTip")}
                         >
-                        How many tokens do you want to issue with this fundraiser? ☝️
+                        A fixed size ensures that each investor is issued a token with the same utility value.
                         </Tooltip>
                         <FormInput onChange={(e) => this.setState({donationSize:e.target.value})} value={this.state.donationSize} type="number" id="#donationSize" placeholder="Fixed Donation Size" />
                     </FormGroup>
