@@ -118,7 +118,7 @@ class NewFundingRound extends Component {
                         >
                         Enter the name of the business you're trying to raise money for ☝️
                         </Tooltip>
-                        <FormInput onChange={(e) => this.setState({businessName:e.target.value})} id="#businessName" placeholder="Business Name" />
+                        <FormInput required onChange={(e) => this.setState({businessName:e.target.value})} id="#businessName" placeholder="Business Name" />
                     </FormGroup>
                     <FormGroup>
                         <label htmlFor="#fundingAmount">How much would you like to raise in USD?</label>
@@ -131,7 +131,7 @@ class NewFundingRound extends Component {
                         >
                         You can raise as little as $50, with a maximum of $5000 (USD)!
                         </Tooltip>
-                        <FormInput onChange={(e) => this.setState({fundingAmount:e.target.value})} type="number" id="#fundingAmount" placeholder="Funding Amount" />
+                        <FormInput required onChange={(e) => this.setState({fundingAmount:e.target.value})} type="number" id="#fundingAmount" placeholder="Funding Amount" />
                     </FormGroup>
                     <FormGroup>
                         <label htmlFor="#fundingPurpose">What do you plan to use these funds for?</label>
@@ -144,7 +144,7 @@ class NewFundingRound extends Component {
                         >
                         Let your customers know what you plan on doing with these funds. You can keep this simple for now! E.g. Research and Development, Paying Suppliers
                         </Tooltip>
-                        <FormInput onChange={(e) => this.setState({fundingPurpose:e.target.value})} id="#fundingPurpose" placeholder="Funding Purpose" />
+                        <FormInput required onChange={(e) => this.setState({fundingPurpose:e.target.value})} id="#fundingPurpose" placeholder="Funding Purpose" />
                     </FormGroup>
                     <FormGroup>
                         <label htmlFor="#donationSize">What do you want the fixed investment size to be?</label>
@@ -157,7 +157,7 @@ class NewFundingRound extends Component {
                         >
                         A fixed size ensures that each investor is issued a token with the same utility value.
                         </Tooltip>
-                        <FormInput onChange={(e) => this.setState({donationSize:e.target.value})} value={this.state.donationSize} type="number" id="#donationSize" placeholder="Fixed Donation Size" />
+                        <FormInput required onChange={(e) => this.setState({donationSize:e.target.value})} value={this.state.donationSize} type="number" id="#donationSize" placeholder="Fixed Donation Size" />
                     </FormGroup>
                     <div>
                         <Button block theme="success" type="submit">{buttonText}</Button>
