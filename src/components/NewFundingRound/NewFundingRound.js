@@ -98,7 +98,7 @@ class NewFundingRound extends Component {
                         <FormInput onChange={(e) => this.setState({businessName:e.target.value})} id="#businessName" placeholder="Business Name" />
                     </FormGroup>
                     <FormGroup>
-                        <label htmlFor="#fundingAmount">How much would you like to raise in USD?</label>
+                        <label htmlFor="#fundingAmount">How much would you like to raise (USD)?</label>
                         <FormInput onChange={(e) => this.setState({fundingAmount:e.target.value})} type="number" id="#fundingAmount" placeholder="Funding Amount" />
                     </FormGroup>
                     <FormGroup>
@@ -106,7 +106,7 @@ class NewFundingRound extends Component {
                         <FormInput onChange={(e) => this.setState({fundingPurpose:e.target.value})} id="#fundingPurpose" placeholder="Funding Purpose" />
                     </FormGroup>
                     <FormGroup>
-                        <label htmlFor="#donationSize">What do you want the fixed donation size to be?</label>
+                        <label htmlFor="#donationSize">What do you want the fixed donation size to be (USD)?</label>
                         <FormInput onChange={(e) => this.setState({donationSize:e.target.value})} value={this.state.donationSize} type="number" id="#donationSize" placeholder="Fixed Donation Size" />
                     </FormGroup>
                     <div>
