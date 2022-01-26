@@ -3,7 +3,7 @@ import { isNil } from 'lodash';
 import {
     Container,
     Form, FormInput, FormGroup, Button,
-    Card, CardBody, CardTitle
+    Card, CardBody, CardTitle, InputGroup, InputGroupAddon, InputGroupText
 } from "shards-react";
 import { Spinner } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
@@ -17,7 +17,7 @@ class NewFundingRound extends Component {
             businessName: "",
             fundingAmount: 0,
             fundingPurpose: "",
-            donationSize: 0,
+            investmentSize: 0,
             contractAddress: "",
             tokenSymbol: "",
             loadingContract: false,
@@ -32,7 +32,7 @@ class NewFundingRound extends Component {
         event.preventDefault();
         
         try {
-            const desiredTokenIssue = Math.round(this.state.fundingAmount / this.state.donationSize);
+            const desiredTokenIssue = Math.round(this.state.fundingAmount / this.state.investmentSize);
             
             const requestData = {
                 businessName: this.state.businessName,
@@ -95,19 +95,39 @@ class NewFundingRound extends Component {
                 <Form onSubmit={this.handleSubmit}>
                     <FormGroup>
                         <label htmlFor="#businessName">What's the name of your business?</label>
-                        <FormInput onChange={(e) => this.setState({businessName:e.target.value})} id="#businessName" placeholder="Business Name" />
+                        <InputGroup size="sm">
+                            <FormInput onChange={(e) => this.setState({businessName:e.target.value})} id="#businessName" placeholder="Business Name" />
+                        </InputGroup>
                     </FormGroup>
                     <FormGroup>
                         <label htmlFor="#fundingAmount">How much would you like to raise (USD)?</label>
-                        <FormInput onChange={(e) => this.setState({fundingAmount:e.target.value})} type="number" id="#fundingAmount" placeholder="Funding Amount" />
+                        <InputGroup size="sm">
+                            <InputGroupAddon type="prepend">
+                                <InputGroupText>Funding Amount</InputGroupText>
+                            </InputGroupAddon>
+                            <FormInput onChange={(e) => this.setState({fundingAmount:e.target.value})} id="#fundingAmount"/>
+                            <InputGroupAddon type="append">
+                                <InputGroupText>.00 (USD)</InputGroupText>
+                            </InputGroupAddon>
+                        </InputGroup>
                     </FormGroup>
                     <FormGroup>
                         <label htmlFor="#fundingPurpose">What do you plan to use these funds for?</label>
-                        <FormInput onChange={(e) => this.setState({fundingPurpose:e.target.value})} id="#fundingPurpose" placeholder="Funding Purpose" />
+                        <InputGroup size="sm">
+                            <FormInput onChange={(e) => this.setState({fundingPurpose:e.target.value})} id="#fundingPurpose" placeholder="Funding Purpose" />
+                        </InputGroup>
                     </FormGroup>
                     <FormGroup>
-                        <label htmlFor="#donationSize">What do you want the fixed donation size to be (USD)?</label>
-                        <FormInput onChange={(e) => this.setState({donationSize:e.target.value})} value={this.state.donationSize} type="number" id="#donationSize" placeholder="Fixed Donation Size" />
+                        <label htmlFor="#investmentSize">What do you want the fixed investment size to be (USD)?</label>
+                        <InputGroup size="sm">
+                            <InputGroupAddon type="prepend">
+                                <InputGroupText>Investment Amount</InputGroupText>
+                            </InputGroupAddon>
+                            <FormInput onChange={(e) => this.setState({investmentSize:e.target.value})} value={this.state.investmentSize} type="number" id="#investmentSize" placeholder="Fixed Investment Size" />
+                            <InputGroupAddon type="append">
+                                <InputGroupText>.00 (USD)</InputGroupText>
+                            </InputGroupAddon>
+                        </InputGroup>
                     </FormGroup>
                     <div>
                         <Button block theme="success" type="submit">{buttonText}</Button>
