@@ -2,6 +2,7 @@ import NewFundingRound from '../NewFundingRound/NewFundingRound';
 import FundingPage from '../FundingPage/FundingPage';
 import TokenRedeem from '../TokenRedeem/TokenRedeem';
 import NavBar from '../NavBar/NavBar';
+import HomePage from '../HomePage/Homepage';
 import {  BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -14,6 +15,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path='/home'>
+            <HomePage/>
           </Route>
           <Route path='/about'>
           </Route>
