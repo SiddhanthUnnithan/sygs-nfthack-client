@@ -22,7 +22,7 @@ function App() {
           <Route path="/new-funding-round">
             <NewFundingRound/>
           </Route>
-          <Route path='/funding/:tokenSymbol' component={FundingPage}/>
+          <Route path='/contribute' component={FundingPage}/>
           <Route path='/redeem/:tokenSymbol'>
             <TokenRedeem/>
           </Route>
