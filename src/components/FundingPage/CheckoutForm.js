@@ -25,6 +25,7 @@ function CheckoutForm({ tokenSymbol, props }){
         event.preventDefault();
 
         if (isNil(stripe) || isNil(elements)){
+            console.log('Missing stripe components to render card UI.');
             return;
         }
 
