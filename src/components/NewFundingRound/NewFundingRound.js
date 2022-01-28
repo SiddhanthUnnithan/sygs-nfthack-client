@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { isNil } from 'lodash';
 import {
-    Container,
+    Alert, Container,
     Form, FormInput, FormGroup, Button,
     Card, CardBody, CardTitle, Tooltip
 } from "shards-react";
@@ -28,16 +28,42 @@ class NewFundingRound extends Component {
                 fundingPurposeTip: false,
                 donationSizeTip: false,
             },
+            errorMessage: "",
+            error: false,
         };
 
         // public methods
         this.toggle = this.toggle.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.makeRequest = this.makeRequest.bind(this);
+        this.validationCheck = this.validationCheck.bind(this);
+        this.dismissValidationAlert = this.dismissValidationAlert.bind(this);
+    }
+
+    validationCheck() {
+        let errorMessage = "";
+        if (this.state.fundingAmount <= 0) {
+            errorMessage = " funding amount,";
+        }
+
+        if (this.state.donationSize <= 0) {
+            errorMessage = errorMessage.concat(" donation size");
+        }
+
+        if (errorMessage.length > 0) {
+            let initialErrorMessage = 'The following quantities cannot be less than or equal to 0:'
+            this.setState({errorMessage: initialErrorMessage.concat(errorMessage), error: true});
+            return false;
+        }
+        return true;
     }
 
     async handleSubmit(event) {
         event.preventDefault();
+
+        if (!this.validationCheck()) {
+            return;
+        }
         
         try {
             const desiredTokenIssue = Math.round(this.state.fundingAmount / this.state.donationSize);
@@ -93,7 +119,11 @@ class NewFundingRound extends Component {
         const newState = this.state.toolTip;
         newState[pos] = !this.state.toolTip[pos];
         this.setState({ toolTip: newState});
-      }
+    }
+
+    dismissValidationAlert() {
+        this.setState({ error: false });
+    }
 
     render() {
         let buttonText = "Submit";
@@ -106,6 +136,9 @@ class NewFundingRound extends Component {
         return (
             <div className='content-wrapper'>
             <Container>
+                <Alert theme="warning" dismissible={this.dismissValidationAlert} open={this.state.error}>
+                    {this.state.errorMessage}
+                </Alert>
                 <Form onSubmit={this.handleSubmit}>
                     <FormGroup>
                         <label htmlFor="#businessName">What's the name of your business?</label>
